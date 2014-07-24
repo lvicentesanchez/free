@@ -12,12 +12,15 @@ resolvers ++= Seq(
 // Dependencies
 
 val testDependencies = Seq (
-  "org.specs2"   %% "specs2"      % "2.3.12" % "test"
+  "com.typesafe.slick" %% "slick-testkit" % "2.1.0-RC2" % "test",
+  "org.specs2"         %% "specs2"        % "2.3.13"    % "test"
 )
 
 val rootDependencies = Seq(
-  "com.chuusai"  %% "shapeless"   % "2.0.0",
-  "org.scalaz"   %% "scalaz-core" % "7.0.6"
+  "com.chuusai"        %% "shapeless"   % "2.0.0",
+  "com.h2database"     %  "h2"          % "1.4.180",
+  "com.typesafe.slick" %% "slick"       % "2.1.0-RC2",
+  "org.scalaz"         %% "scalaz-core" % "7.0.6"
 )
 
 val dependencies =
@@ -74,7 +77,7 @@ val pluginsSettings =
 val settings = Seq(
   name := "freez",
   version := "0.1-SNAPSHOT",
-  scalaVersion := "2.11.1",
+  scalaVersion := "2.11.2",
   libraryDependencies ++= dependencies,
   fork in run := true,
   fork in Test := true,
