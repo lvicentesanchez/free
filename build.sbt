@@ -1,5 +1,3 @@
-import sbtassembly.Plugin.AssemblyKeys._
-
 // put this at the top of the file
 import scalariform.formatter.preferences._
 
@@ -12,14 +10,15 @@ resolvers ++= Seq(
 // Dependencies
 
 val testDependencies = Seq (
-  "com.typesafe.slick" %% "slick-testkit" % "2.1.0-RC2" % "test"
+  "com.typesafe.slick" %% "slick-testkit" % "2.1.0-RC3" % "test"
 )
 
 val rootDependencies = Seq(
-  "com.chuusai"        %% "shapeless"   % "2.0.0",
-  "com.h2database"     %  "h2"          % "1.4.180",
-  "com.typesafe.slick" %% "slick"       % "2.1.0-RC2",
-  "org.scalaz"         %% "scalaz-core" % "7.1.0-RC2"
+  "com.chuusai"        %% "shapeless"         % "2.0.0",
+  "com.h2database"     %  "h2"                % "1.4.180",
+  "com.typesafe.slick" %% "slick"             % "2.1.0-RC3",
+  "org.scalaz"         %% "scalaz-concurrent" % "7.1.0-RC2",
+  "org.scalaz"         %% "scalaz-core"       % "7.1.0-RC2"
 )
 
 val dependencies =
@@ -28,6 +27,25 @@ val dependencies =
 
 // Settings
 //
+val compileSettings = Seq(
+  "-deprecation",
+  "-encoding", "UTF-8",
+  "-feature",
+  "-language:_",
+  //"-language:existentials",
+  //"-language:experimental.macros",
+  //"-language:higherKinds",
+  //"-language:implicitConversions",
+  "-unchecked",
+  "-Xfatal-warnings",
+  "-Xlint",
+  "-Yno-adapted-args",
+  //"-Ywarn-all",
+  //"-Ywarn-dead-code",
+  "-Ywarn-numeric-widen",
+  "-Ywarn-value-discard"
+)
+
 val forkedJvmOption = Seq(
   "-server",
   "-Dfile.encoding=UTF8",
@@ -68,7 +86,6 @@ val formatting =
     .setPreference(SpacesWithinPatternBinders, true)
 
 val pluginsSettings =
-  assemblySettings ++
   net.virtualvoid.sbt.graph.Plugin.graphSettings ++
   org.scalastyle.sbt.ScalastylePlugin.Settings ++
   scalariformSettings
@@ -84,7 +101,7 @@ val settings = Seq(
   connectInput in run := true,
   javaOptions in run ++= forkedJvmOption,
   javaOptions in Test ++= forkedJvmOption,
-  scalacOptions ++= Seq("-target:jvm-1.6", "-Xlog-reflective-calls", "-Ywarn-adapted-args", "-Yresolve-term-conflict:package", "-feature"),
+  scalacOptions := compileSettings,
   // formatting
   //
   ScalariformKeys.preferences := formatting
