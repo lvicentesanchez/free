@@ -10,19 +10,22 @@ import services.modules.interpreter._
 import services.modules.interpreter.Blocking._
 
 object main extends App {
-  type Exe[A] = Coproduct[QueueModule, UsersModule, A]
+  type Ex0[A] = Coproduct[QueueModule, UsersModule, A]
+  type Exe[A] = Coproduct[StdIO.Module, Ex0, A]
   type Prg[A] = Free[Exe, A]
 
-  implicit val int1 = new QueueBlocking
+  implicit val int0 = new QueueBlocking
+  implicit val int1 = new StdIOBlocking
   implicit val int2 = new UsersBlocking
 
-  val prg: Prg[Seq[String]] =
+  val prg: Prg[Unit] =
     for {
-      _ ← queue.put[Exe](QueueID("myqueue"), "Elephant")
-      _ ← queue.put[Exe](QueueID("myqueue"), "Donkey")
+      input ← stdio.get[Exe]("What's your name?")
+      _ ← queue.put[Exe](QueueID("myqueue"), input)
       value ← queue.get[Exe](QueueID("myqueue"))
       users ← value.fold(Free.point[Exe, Option[User]](none[User]))(v ⇒ users.findById[Exe](UserID(v)))
-    } yield Seq(value, users.map(_.name)).flatten
+      _ ← stdio.put[Exe](Seq(value, users.map(_.name)).flatten.toString())
+    } yield ()
 
-  println((new Interpreter[Exe, Id] {})(prg))
+  (new Interpreter[Exe, Id] {})(prg)
 }
