@@ -1,20 +1,28 @@
 package services
 
-import services.modules.interpreter.QueueTaskInterpreter
-import services.modules.{ QueueModule, QueueID, queue }
-
-import scalaz.Free
+import scalaz.Id._
+import scalaz.{ Coproduct, Free }
+import scalaz.std.option.{ optionFirstMonad ⇒ _, optionLastMonad ⇒ _, optionMaxMonad ⇒ _, optionMinMonad ⇒ _, _ }
+import services.modules._
+import services.modules.all._
+import services.modules.interpreter._
+import services.modules.interpreter.Blocking._
 
 object main extends App {
-  import services.modules.queue._
+  type Exe[A] = Coproduct[QueueModule, UsersModule, A]
+  type Prg[A] = Free[Exe, A]
 
-  val prg: Free[QueueModule, Seq[String]] =
+  implicit val int1 = new QueueBlocking
+  implicit val int2 = new UsersBlocking
+
+  val prg: Prg[Seq[String]] =
     for {
-      _ ← queue.put(QueueID("myqueue"), "Elephant")
-      _ ← queue.put(QueueID("myqueue"), "Donkey")
-      value1 ← queue.get(QueueID("myqueue"))
-      value2 ← queue.get(QueueID("myqueue"))
-    } yield Seq(value1, value2).flatten
+      _ ← queue.put[Exe](QueueID("myqueue"), "Elephant")
+      _ ← queue.put[Exe](QueueID("myqueue"), "Donkey")
+      value1 ← queue.get[Exe](QueueID("myqueue"))
+      value2 ← queue.get[Exe](QueueID("myqueue"))
+      users1 ← users.findById[Exe](UserID("23"))
+    } yield Seq(value1, value2, users1.map(_.uid.repr)).flatten
 
-  println(QueueTaskInterpreter(prg).run)
+  println((new Interpreter[Exe, Id] {})(prg))
 }

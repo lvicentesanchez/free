@@ -5,7 +5,7 @@ import scalaz._
 import scalaz.Id._
 import scalaz.std.option._
 
-object UsersTestInterpreter {
+object UsersIdInterpreter {
   val exe: UsersModule ~> Id = new (UsersModule ~> Id) {
     def apply[A](io: UsersModule[A]): Id[A] = io match {
       case FindById(uid, f) ⇒

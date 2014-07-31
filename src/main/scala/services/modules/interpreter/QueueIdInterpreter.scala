@@ -5,7 +5,7 @@ import scala.collection.mutable
 import scalaz._
 import scalaz.Id._
 
-object QueueTestInterpreter {
+object QueueIdInterpreter {
   val mem: mutable.Queue[String] = new mutable.Queue[String]()
   val exe: QueueModule ~> Id = new (QueueModule ~> Id) {
     def apply[A](io: QueueModule[A]): Id[A] = io match {
@@ -23,3 +23,4 @@ object QueueTestInterpreter {
   def apply[A](io: Free[QueueModule, A]): Id[A] =
     io.runM[Id](exe.apply[Free[QueueModule, A]])
 }
+
