@@ -3,6 +3,7 @@ package services
 import scalaz.Id._
 import scalaz.{ Coproduct, Free }
 import scalaz.std.option.{ optionFirstMonad ⇒ _, optionLastMonad ⇒ _, optionMaxMonad ⇒ _, optionMinMonad ⇒ _, _ }
+import scalaz.syntax.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
@@ -20,9 +21,8 @@ object main extends App {
       _ ← queue.put[Exe](QueueID("myqueue"), "Elephant")
       _ ← queue.put[Exe](QueueID("myqueue"), "Donkey")
       value1 ← queue.get[Exe](QueueID("myqueue"))
-      value2 ← queue.get[Exe](QueueID("myqueue"))
-      users1 ← users.findById[Exe](UserID("23"))
-    } yield Seq(value1, value2, users1.map(_.uid.repr)).flatten
+      users1 ← users.findById[Exe](UserID(value1 | ""))
+    } yield Seq(value1, users1.map(_.uid.repr)).flatten
 
   println((new Interpreter[Exe, Id] {})(prg))
 }
