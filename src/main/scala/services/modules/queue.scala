@@ -20,8 +20,8 @@ trait QueueInstances {
 
 trait QueueFunctions extends InjectFunctions {
   def get[F[_]: Functor](queueID: QueueID)(implicit I: Inject[QueueModule, F]): Free[F, Option[String]] =
-    inject[F, QueueModule, Option[String]](Get(queueID, Free.pure))
+    inject[F, QueueModule, Option[String]](Get(queueID, Free.point))
 
   def put[F[_]: Functor](queueID: QueueID, value: String)(implicit I: Inject[QueueModule, F]): Free[F, Unit] =
-    inject[F, QueueModule, Unit](Put(queueID, value, Free.pure))
+    inject[F, QueueModule, Unit](Put(queueID, value, Free.point))
 }
