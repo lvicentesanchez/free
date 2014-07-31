@@ -7,6 +7,6 @@ import services.modules._
 class UsersBlocking extends Blocking[UsersModule] {
   override def apply[A](input: UsersModule[A]): Id[A] = input match {
     case FindById(uid, f) ⇒
-      f(some(User(uid, "name", 23)))
+      f(some(User(uid, uid.repr.reverse, 23)))
   }
 }
