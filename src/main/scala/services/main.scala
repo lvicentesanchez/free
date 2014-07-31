@@ -6,6 +6,7 @@ import scalaz.std.option.{ optionFirstMonad ⇒ _, optionLastMonad ⇒ _, option
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
+import services.modules.interpreter.blocking.all._
 import services.modules.interpreter.Blocking._
 
 object main extends App {
@@ -13,11 +14,6 @@ object main extends App {
   type Ex0[A] = Coproduct[QueueModule, Ex1, A]
   type Exe[A] = Coproduct[StdIO.Module, Ex0, A]
   type Prg[A] = Free[Exe, A]
-
-  implicit val int0 = new QueueBlocking
-  implicit val int1 = new StdIOBlocking
-  implicit val int2 = new TimerBlocking
-  implicit val int3 = new UsersBlocking
 
   val prg: Prg[Unit] =
     for {
