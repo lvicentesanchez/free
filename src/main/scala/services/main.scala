@@ -1,9 +1,8 @@
 package services
 
 import scalaz.Id._
-import scalaz.{ Monad, Coproduct, Free }
+import scalaz.{ Coproduct, Free }
 import scalaz.std.option.{ optionFirstMonad ⇒ _, optionLastMonad ⇒ _, optionMaxMonad ⇒ _, optionMinMonad ⇒ _, _ }
-import scalaz.syntax.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
