@@ -2,7 +2,7 @@ package services
 
 import scalaz.Id._
 import scalaz.{ Coproduct, Free }
-import scalaz.std.option.{ optionFirstMonad ⇒ _, optionLastMonad ⇒ _, optionMaxMonad ⇒ _, optionMinMonad ⇒ _, _ }
+import scalaz.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
@@ -10,22 +10,23 @@ import services.modules.interpreter.Blocking._
 import services.modules.interpreter.blocking.all._
 
 object main extends App {
-  type Ex1[A] = Coproduct[Timer.Module, UsersModule, A]
-  type Ex0[A] = Coproduct[QueueModule, Ex1, A]
-  type Exe[A] = Coproduct[StdIO.Module, Ex0, A]
-  type Prg[A] = Free[Exe, A]
+  type Fr2[A] = Users.Module[A]
+  type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
+  type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
+  type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
+  type Prg[A] = Free[Frg, A]
 
   val prg: Prg[Unit] =
     for {
-      input ← stdio.get[Exe]("What's your name?")
-      time0 ← timer.get[Exe]()
-      _ ← queue.put[Exe](QueueID("myqueue"), input)
-      value ← queue.get[Exe](QueueID("myqueue"))
-      users ← value.fold(Free.point[Exe, Option[User]](none[User]))(v ⇒ users.findById[Exe](UserID(v)))
-      time1 ← timer.get[Exe]()
-      _ ← stdio.put[Exe](Seq(value, users.map(_.name)).flatten.toString())
-      _ ← stdio.put[Exe](s"Secs : ${(time1 - time0) / 1000.0}")
+      input ← stdio.get[Frg]("What's your name?")
+      time0 ← timer.get[Frg]()
+      _ ← queue.put[Frg](QueueID("myqueue"), input)
+      value ← queue.get[Frg](QueueID("myqueue"))
+      users ← value.fold(Free.point[Frg, Option[User]](none[User]))(v ⇒ users.findById[Frg](UserID(v)))
+      time1 ← timer.get[Frg]()
+      _ ← stdio.put[Frg](Seq(value, users.map(_.name)).flatten.toString())
+      _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
-  Interpreter[Exe, Id](prg)
+  Interpreter[Frg, Id](prg)
 }

@@ -6,19 +6,21 @@ case class UserID(repr: String)
 
 case class User(uid: UserID, name: String, age: Int)
 
-sealed trait UsersModule[A]
+object Users {
+  sealed trait Module[A]
 
-final case class FindById[A](userID: UserID, f: (⇒ Option[User]) ⇒ A) extends UsersModule[A]
+  final case class FindById[A](userID: UserID, f: (⇒ Option[User]) ⇒ A) extends Module[A]
+}
 
 trait UsersInstances {
-  implicit val usersAlgebraFunctor: Functor[UsersModule] = new Functor[UsersModule] {
-    override def map[A, B](a: UsersModule[A])(f: A ⇒ B) = a match {
-      case FindById(uid, g) ⇒ FindById(uid, a ⇒ f(g(a)))
+  implicit val usersAlgebraFunctor: Functor[Users.Module] = new Functor[Users.Module] {
+    override def map[A, B](a: Users.Module[A])(f: A ⇒ B) = a match {
+      case Users.FindById(uid, g) ⇒ Users.FindById(uid, a ⇒ f(g(a)))
     }
   }
 }
 
 trait UsersFunctions extends InjectFunctions {
-  def findById[F[_]: Functor](uid: UserID)(implicit I: Inject[UsersModule, F]): Free[F, Option[User]] =
-    inject[F, UsersModule, Option[User]](FindById(uid, Free.point))
+  def findById[F[_]: Functor](uid: UserID)(implicit I: Inject[Users.Module, F]): Free[F, Option[User]] =
+    inject[F, Users.Module, Option[User]](Users.FindById(uid, Free.point))
 }
