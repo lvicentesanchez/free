@@ -6,8 +6,8 @@ import scalaz.std.option.{ optionFirstMonad ⇒ _, optionLastMonad ⇒ _, option
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
-import services.modules.interpreter.blocking.all._
 import services.modules.interpreter.Blocking._
+import services.modules.interpreter.blocking.all._
 
 object main extends App {
   type Ex1[A] = Coproduct[Timer.Module, UsersModule, A]
@@ -27,5 +27,5 @@ object main extends App {
       _ ← stdio.put[Exe](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
-  (new Interpreter[Exe, Id] {})(prg)
+  Interpreter[Exe, Id](prg)
 }
