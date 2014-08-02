@@ -2,11 +2,12 @@ package services
 
 import scalaz.Id._
 import scalaz.{ Coproduct, Free }
+import scalaz.concurrent.Task
 import scalaz.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
-import services.modules.interpreter.blocking.all._
+import services.modules.interpreter.async.all._
 
 object main extends App {
   type Fr2[A] = Users.Module[A]
@@ -27,5 +28,5 @@ object main extends App {
       _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
-  Interpreter[Frg, Id](prg)
+  Interpreter[Frg, Task](prg).run
 }

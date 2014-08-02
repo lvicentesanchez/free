@@ -3,6 +3,19 @@ package services.modules
 import scalaz.{ Coproduct, ~>, -\/, \/- }
 
 package object interpreter {
+  object async {
+    object queue extends QueueAsyncInterpreterInstance
+    object stdio extends StdIOAsyncInterpreterInstance
+    object timer extends TimerAsyncInterpreterInstance
+    object users extends UsersAsyncInterpreterInstance
+
+    object all
+      extends QueueAsyncInterpreterInstance
+      with StdIOAsyncInterpreterInstance
+      with TimerAsyncInterpreterInstance
+      with UsersAsyncInterpreterInstance
+  }
+
   object blocking {
     object queue extends QueueBlockingInterpreterInstance
     object stdio extends StdIOBlockingInterpreterInstance
@@ -16,7 +29,7 @@ package object interpreter {
       with UsersBlockingInterpreterInstance
   }
 
-  implicit def coproductInterpreter[F[_]: ({ type L[M[_]] = ~>[M, N] })#L, G[_]: ({ type L[M[_]] = ~>[M, N] })#L, N[_]] =
+  implicit def coproductInterpreter[F[_]: ({ type L[M[_]] = ~>[M, N] })#L, G[_]: ({ type L[M[_]] = ~>[M, N] })#L, N[_]]: ~>[({ type L[A] = Coproduct[F, G, A] })#L, N] =
     new ~>[({ type L[A] = Coproduct[F, G, A] })#L, N] {
       def apply[A](input: Coproduct[F, G, A]) = input.run match {
         case -\/(fa) ⇒ implicitly[~>[F, N]].apply(fa)
