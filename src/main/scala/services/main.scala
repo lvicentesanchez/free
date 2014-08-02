@@ -6,7 +6,6 @@ import scalaz.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
-import services.modules.interpreter.Blocking._
 import services.modules.interpreter.blocking.all._
 
 object main extends App {
