@@ -16,15 +16,25 @@ object main extends App {
   type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
   type Prg[A] = Free[Frg, A]
 
-  val prg: Prg[Unit] =
+  val produce: Prg[Long] =
     for {
       input ← stdio.get[Frg]("What's your name?")
       time0 ← timer.get[Frg]()
       _ ← queue.put[Frg](QueueID("myqueue"), input)
+    } yield time0
+
+  val consume: Prg[Long] =
+    for {
       value ← queue.get[Frg](QueueID("myqueue"))
       users ← value.fold(Free.point[Frg, Option[User]](none[User]))(v ⇒ users.findById[Frg](UserID(v)))
       time1 ← timer.get[Frg]()
       _ ← stdio.put[Frg](Seq(value, users.map(_.name)).flatten.toString())
+    } yield time1
+
+  val prg: Prg[Unit] =
+    for {
+      time0 ← produce
+      time1 ← consume
       _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
