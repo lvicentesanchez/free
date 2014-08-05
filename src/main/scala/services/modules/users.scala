@@ -9,7 +9,7 @@ case class User(uid: UserID, name: String, age: Int)
 object Users {
   sealed trait Module[A]
 
-  final case class FindById[A](userID: UserID, f: (⇒ Option[User]) ⇒ A) extends Module[A]
+  final case class FindById[A](userID: UserID, f: Option[User] ⇒ A) extends Module[A]
 }
 
 trait UsersInstances {
@@ -22,5 +22,5 @@ trait UsersInstances {
 
 trait UsersFunctions extends InjectFunctions {
   def findById[F[_]: Functor](uid: UserID)(implicit I: Inject[Users.Module, F]): Free[F, Option[User]] =
-    inject[F, Users.Module, Option[User]](Users.FindById(uid, Free.point))
+    Free.liftF(I.inj(Users.FindById(uid, identity)))
 }

@@ -7,8 +7,8 @@ case class QueueID(repr: String)
 object Queue {
   sealed trait Module[A]
 
-  final case class Put[A](queue: QueueID, value: String, f: (⇒ Unit) ⇒ A) extends Module[A]
-  final case class Get[A](queue: QueueID, f: (⇒ Option[String]) ⇒ A) extends Module[A]
+  final case class Put[A](queue: QueueID, value: String, f: Unit ⇒ A) extends Module[A]
+  final case class Get[A](queue: QueueID, f: Option[String] ⇒ A) extends Module[A]
 
 }
 
@@ -23,8 +23,8 @@ trait QueueInstances {
 
 trait QueueFunctions extends InjectFunctions {
   def get[F[_]: Functor](queueID: QueueID)(implicit I: Inject[Queue.Module, F]): Free[F, Option[String]] =
-    inject[F, Queue.Module, Option[String]](Queue.Get(queueID, Free.point))
+    Free.liftF(I.inj(Queue.Get(queueID, identity)))
 
   def put[F[_]: Functor](queueID: QueueID, value: String)(implicit I: Inject[Queue.Module, F]): Free[F, Unit] =
-    inject[F, Queue.Module, Unit](Queue.Put(queueID, value, Free.point))
+    Free.liftF(I.inj(Queue.Put(queueID, value, identity)))
 }
