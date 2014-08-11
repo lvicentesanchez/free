@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Functor, Inject, InjectFunctions }
+import scalaz.{ Free, Inject, InjectFunctions }
 
 object StdIO {
   sealed trait Module[A]
@@ -8,19 +8,10 @@ object StdIO {
   final case class Put[A](output: String, f: Unit ⇒ A) extends Module[A]
 }
 
-trait StdIOInstances {
-  implicit val stdioAlgebraFunctor: Functor[StdIO.Module] = new Functor[StdIO.Module] {
-    override def map[A, B](a: StdIO.Module[A])(f: A ⇒ B) = a match {
-      case StdIO.Get(prompt, g) ⇒ StdIO.Get(prompt, a ⇒ f(g(a)))
-      case StdIO.Put(output, g) ⇒ StdIO.Put(output, a ⇒ f(g(a)))
-    }
-  }
-}
-
 trait StdIOFunctions extends InjectFunctions {
-  def get[F[_]: Functor](prompt: String)(implicit I: Inject[StdIO.Module, F]): Free[F, String] =
-    Free.liftF(I.inj(StdIO.Get(prompt, identity)))
+  def get[F[_]](prompt: String)(implicit I: Inject[StdIO.Module, F]): Free.FreeC[F, String] =
+    Free.liftFC(I.inj(StdIO.Get(prompt, identity)))
 
-  def put[F[_]: Functor](output: String)(implicit I: Inject[StdIO.Module, F]): Free[F, Unit] =
-    Free.liftF(I.inj(StdIO.Put(output, identity)))
+  def put[F[_]](output: String)(implicit I: Inject[StdIO.Module, F]): Free.FreeC[F, Unit] =
+    Free.liftFC(I.inj(StdIO.Put(output, identity)))
 }

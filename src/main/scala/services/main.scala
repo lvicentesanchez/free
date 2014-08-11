@@ -7,9 +7,10 @@ import scalaz.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
-import services.modules.interpreter.async.all._
+import services.modules.interpreter.blocking.all._
 
 object main extends App {
+  /*
   type Fr2[A] = Users.Module[A]
   type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
   type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
@@ -51,4 +52,18 @@ object main extends App {
     } yield ()
 
   Interpreter[Frg, Task](program).run
+  */
+  type Fr0[A] = StdIO.Module[A]
+  type Frg[A] = Coproduct[Timer.Module, Fr0, A]
+  type Prg[A] = Free.FreeC[Frg, A]
+
+  val program: Prg[Unit] =
+    for {
+      a ← timer.get[Frg]()
+      i ← stdio.get[Frg]("What's your name?")
+      b ← timer.get[Frg]()
+      _ ← stdio.put[Frg](s"Hello $i!! ${b - a} ms.")
+    } yield ()
+
+  Interpreter[Frg, Id](program)
 }

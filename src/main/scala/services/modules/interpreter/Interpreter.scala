@@ -1,10 +1,10 @@
 package services.modules.interpreter
 
-import scalaz.{ ~>, Monad, Free, Functor }
+import scalaz.{ ~>, Monad, Free }
 
 sealed trait Interpreter[F[_], M[_]] {
-  def apply[A](input: Free[F, A])(implicit F: Functor[F], M: Monad[M], f: F ~> M): M[A] =
-    input.runM[M](f[Free[F, A]])
+  def apply[A](input: Free.FreeC[F, A])(implicit M: Monad[M], f: F ~> M): M[A] =
+    Free.runFC[F, M, A](input)(f)
 }
 
 object Interpreter {
