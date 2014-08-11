@@ -4,6 +4,7 @@ import scalaz.{ Free, Inject, InjectFunctions }
 
 object Timer {
   sealed trait Module[A]
+
   final case class Get[A](f: Long ⇒ A) extends Module[A]
 }
 

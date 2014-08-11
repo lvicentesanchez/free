@@ -4,6 +4,7 @@ import scalaz.{ Free, Inject, InjectFunctions }
 
 object StdIO {
   sealed trait Module[A]
+
   final case class Get[A](prompt: String, f: String ⇒ A) extends Module[A]
   final case class Put[A](output: String, f: Unit ⇒ A) extends Module[A]
 }
