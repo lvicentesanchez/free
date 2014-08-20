@@ -7,10 +7,11 @@ import scalaz.std.option._
 import services.modules._
 import services.modules.all._
 import services.modules.interpreter._
-import services.modules.interpreter.blocking.all._
+import services.modules.interpreter.async.all._
 
 object main extends App {
-  type Fr2[A] = Users.Module[A]
+  type Fr3[A] = Value.Module[A]
+  type Fr2[A] = Coproduct[Users.Module, Fr3, A]
   type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
   type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
   type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
@@ -21,12 +22,12 @@ object main extends App {
       input ← stdio.get[Frg]("What's your name?")
       time0 ← timer.get[Frg]()
       _ ← queue.put[Frg](QueueID("myqueue"), input)
-      value ← queue.get[Frg](QueueID("myqueue"))
-      users = none[User] // value.fold[Free.FreeC[Frg, Option[User]]](Free.liftFC(none[User]))(v ⇒ users.findById[Frg](UserID(v)))
+      valuu ← queue.get[Frg](QueueID("myqueue"))
+      users ← valuu.fold(value.pure[Frg, Option[User]](none[User]))(v ⇒ users.findById[Frg](UserID(v)))
       time1 ← timer.get[Frg]()
-      _ ← stdio.put[Frg](Seq(value, users.map(_.name)).flatten.toString())
+      _ ← stdio.put[Frg](Seq(valuu, users.map(_.name)).flatten.toString())
       _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
-  Interpreter[Frg, Id](program)
+  program.runI[Task].run
 }
