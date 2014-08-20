@@ -29,16 +29,16 @@ package object interpreter {
       with UsersBlockingInterpreterInstance
   }
 
-  implicit def coproductInterpreter[F[_]: ({ type L[M[_]] = M ~> N })#L, G[_]: ({ type L[M[_]] = M ~> N })#L, N[_]]: ({ type L[A] = Coproduct[F, G, A] })#L ~> N =
+  implicit class InterpreterExtensionMethods[F[_], A](val free: F.FreeC[F, A]) {
+    def runI[M[_]](implicit M: Monad[M], f: F ~> M): M[A] =
+      F.runFC[F, M, A](free)(f)
+  }
+
+  implicit def PartialCoproductInterpreter[F[_]: ({ type L[M[_]] = M ~> N })#L, G[_]: ({ type L[M[_]] = M ~> N })#L, N[_]]: ({ type L[A] = Coproduct[F, G, A] })#L ~> N =
     new (({ type L[A] = Coproduct[F, G, A] })#L ~> N) {
       def apply[A](input: Coproduct[F, G, A]) = input.run match {
         case -\/(fa) ⇒ implicitly[F ~> N].apply(fa)
         case \/-(ga) ⇒ implicitly[G ~> N].apply(ga)
       }
     }
-
-  implicit class ImplicitInterpreter[F[_], A](val free: F.FreeC[F, A]) {
-    def runI[M[_]](implicit M: Monad[M], f: F ~> M): M[A] =
-      F.runFC[F, M, A](free)(f)
-  }
 }
