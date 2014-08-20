@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Functor, Inject, InjectFunctions }
+import scalaz.{ Free ⇒ F, Inject, InjectFunctions }
 
 case class UserID(repr: String)
 
@@ -12,15 +12,7 @@ object Users {
   final case class FindById[A](userID: UserID, f: Option[User] ⇒ A) extends Module[A]
 }
 
-trait UsersInstances {
-  implicit val usersAlgebraFunctor: Functor[Users.Module] = new Functor[Users.Module] {
-    override def map[A, B](a: Users.Module[A])(f: A ⇒ B) = a match {
-      case Users.FindById(uid, g) ⇒ Users.FindById(uid, a ⇒ f(g(a)))
-    }
-  }
-}
-
 trait UsersFunctions extends InjectFunctions {
-  def findById[F[_]: Functor](uid: UserID)(implicit I: Inject[Users.Module, F]): Free[F, Option[User]] =
-    Free.liftF(I.inj(Users.FindById(uid, identity)))
+  def findById[M[_]](uid: UserID)(implicit I: Inject[Users.Module, M]): F.FreeC[M, Option[User]] =
+    F.liftFC(I.inj(Users.FindById(uid, identity)))
 }
