@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Inject, InjectFunctions }
+import scalaz.{ Free ⇒ F, Inject, InjectFunctions }
 
 case class QueueID(repr: String)
 
@@ -12,9 +12,9 @@ object Queue {
 }
 
 trait QueueFunctions extends InjectFunctions {
-  def get[F[_]](queueID: QueueID)(implicit I: Inject[Queue.Module, F]): Free.FreeC[F, Option[String]] =
-    Free.liftFC(I.inj(Queue.Get(queueID, identity)))
+  def get[M[_]](queueID: QueueID)(implicit I: Inject[Queue.Module, M]): F.FreeC[M, Option[String]] =
+    F.liftFC(I.inj(Queue.Get(queueID, identity)))
 
-  def put[F[_]](queueID: QueueID, value: String)(implicit I: Inject[Queue.Module, F]): Free.FreeC[F, Unit] =
-    Free.liftFC(I.inj(Queue.Put(queueID, value, identity)))
+  def put[M[_]](queueID: QueueID, value: String)(implicit I: Inject[Queue.Module, M]): F.FreeC[M, Unit] =
+    F.liftFC(I.inj(Queue.Put(queueID, value, identity)))
 }

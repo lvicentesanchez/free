@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz._
+import scalaz.{ ~>, -\/, \/-, Coproduct, Free ⇒ F, Monad }
 
 package object interpreter {
   object async {
@@ -8,14 +8,12 @@ package object interpreter {
     object stdio extends StdIOAsyncInterpreterInstance
     object timer extends TimerAsyncInterpreterInstance
     object users extends UsersAsyncInterpreterInstance
-    object value extends ValueAsyncInterpreterInstance
 
     object all
       extends QueueAsyncInterpreterInstance
       with StdIOAsyncInterpreterInstance
       with TimerAsyncInterpreterInstance
       with UsersAsyncInterpreterInstance
-      with ValueAsyncInterpreterInstance
   }
 
   object blocking {
@@ -23,26 +21,24 @@ package object interpreter {
     object stdio extends StdIOBlockingInterpreterInstance
     object timer extends TimerBlockingInterpreterInstance
     object users extends UsersBlockingInterpreterInstance
-    object value extends ValueBlockingInterpreterInstance
 
     object all
       extends QueueBlockingInterpreterInstance
       with StdIOBlockingInterpreterInstance
       with TimerBlockingInterpreterInstance
       with UsersBlockingInterpreterInstance
-      with ValueBlockingInterpreterInstance
   }
 
-  implicit def coproductInterpreter[F[_]: ({ type L[M[_]] = ~>[M, N] })#L, G[_]: ({ type L[M[_]] = ~>[M, N] })#L, N[_]]: ~>[({ type L[A] = Coproduct[F, G, A] })#L, N] =
-    new ~>[({ type L[A] = Coproduct[F, G, A] })#L, N] {
+  implicit def coproductInterpreter[F[_]: ({ type L[M[_]] = M ~> N })#L, G[_]: ({ type L[M[_]] = M ~> N })#L, N[_]]: ({ type L[A] = Coproduct[F, G, A] })#L ~> N =
+    new (({ type L[A] = Coproduct[F, G, A] })#L ~> N) {
       def apply[A](input: Coproduct[F, G, A]) = input.run match {
-        case -\/(fa) ⇒ implicitly[~>[F, N]].apply(fa)
-        case \/-(ga) ⇒ implicitly[~>[G, N]].apply(ga)
+        case -\/(fa) ⇒ implicitly[F ~> N].apply(fa)
+        case \/-(ga) ⇒ implicitly[G ~> N].apply(ga)
       }
     }
 
-  implicit class ImplicitInterpreter[F[_], A](val free: Free.FreeC[F, A]) {
+  implicit class ImplicitInterpreter[F[_], A](val free: F.FreeC[F, A]) {
     def runI[M[_]](implicit M: Monad[M], f: F ~> M): M[A] =
-      Free.runFC[F, M, A](free)(f)
+      F.runFC[F, M, A](free)(f)
   }
 }

@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Inject, InjectFunctions }
+import scalaz.{ Free ⇒ F, Inject, InjectFunctions }
 
 case class UserID(repr: String)
 
@@ -13,6 +13,6 @@ object Users {
 }
 
 trait UsersFunctions extends InjectFunctions {
-  def findById[F[_]](uid: UserID)(implicit I: Inject[Users.Module, F]): Free.FreeC[F, Option[User]] =
-    Free.liftFC(I.inj(Users.FindById(uid, identity)))
+  def findById[M[_]](uid: UserID)(implicit I: Inject[Users.Module, M]): F.FreeC[M, Option[User]] =
+    F.liftFC(I.inj(Users.FindById(uid, identity)))
 }

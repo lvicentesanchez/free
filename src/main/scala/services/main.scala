@@ -1,7 +1,7 @@
 package services
 
 import scalaz.Id._
-import scalaz.{ Coproduct, Free }
+import scalaz.{ Coproduct, Free ⇒ F }
 import scalaz.concurrent.Task
 import scalaz.std.option._
 import services.modules._
@@ -10,12 +10,11 @@ import services.modules.interpreter._
 import services.modules.interpreter.async.all._
 
 object main extends App {
-  type Fr3[A] = Value.Module[A]
-  type Fr2[A] = Coproduct[Users.Module, Fr3, A]
+  type Fr2[A] = Users.Module[A]
   type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
   type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
   type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
-  type Prg[A] = Free.FreeC[Frg, A]
+  type Prg[A] = F.FreeC[Frg, A]
 
   val program: Prg[Unit] =
     for {

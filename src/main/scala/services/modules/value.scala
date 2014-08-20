@@ -1,14 +1,10 @@
 package services.modules
 
-import scalaz.{ Free, Inject, InjectFunctions }
+import scalaz.{ Free ⇒ F }
 
-object Value {
-  sealed trait Module[A]
+object Value
 
-  final case class Pure[A](v: A, f: A ⇒ A) extends Module[A]
-}
-
-trait ValueFunctions extends InjectFunctions {
-  def pure[F[_], A](pure: A)(implicit I: Inject[Value.Module, F]): Free.FreeC[F, A] =
-    Free.liftFC(I.inj(Value.Pure(pure, identity)))
+trait ValueFunctions {
+  def pure[M[_], A](pure: A): F.FreeC[M, A] =
+    F.point[({ type L[x] = scalaz.Coyoneda[M, x] })#L, A](pure)
 }
