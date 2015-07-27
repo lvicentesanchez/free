@@ -10,15 +10,15 @@ resolvers ++= Seq(
 // Dependencies
 
 val testDependencies = Seq (
-  "com.typesafe.slick" %% "slick-testkit"     % "2.1.0" % "test"
+  "com.typesafe.slick" %% "slick-testkit"     % "3.0.0" % "test"
 )
 
 val rootDependencies = Seq(
-  "com.chuusai"        %% "shapeless"         % "2.0.0",
+  "com.chuusai"        %% "shapeless"         % "2.2.5",
   "com.h2database"     %  "h2"                % "1.4.180",
-  "com.typesafe.slick" %% "slick"             % "2.1.0",
-  "org.scalaz"         %% "scalaz-concurrent" % "7.1.0",
-  "org.scalaz"         %% "scalaz-core"       % "7.1.0"
+  "com.typesafe.slick" %% "slick"             % "3.0.0",
+  "org.scalaz"         %% "scalaz-concurrent" % "7.1.3",
+  "org.scalaz"         %% "scalaz-core"       % "7.1.3"
 )
 
 val dependencies =
@@ -37,7 +37,7 @@ val compileSettings = Seq(
   //"-language:higherKinds",
   //"-language:implicitConversions",
   "-unchecked",
-  "-Xfatal-warnings",
+  //"-Xfatal-warnings",
   "-Xlint",
   "-Yno-adapted-args",
   //"-Ywarn-all",
@@ -87,13 +87,12 @@ val formatting =
 
 val pluginsSettings =
   net.virtualvoid.sbt.graph.Plugin.graphSettings ++
-  org.scalastyle.sbt.ScalastylePlugin.Settings ++
   scalariformSettings
 
 val settings = Seq(
   name := "freez",
   version := "0.1-SNAPSHOT",
-  scalaVersion := "2.11.2",
+  scalaVersion := "2.11.7",
   libraryDependencies ++= dependencies,
   fork in run := true,
   fork in Test := true,

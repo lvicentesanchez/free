@@ -8,13 +8,13 @@ import services.modules.Queue
 trait QueueAsyncInterpreterInstance {
   implicit val queueAsyncInterpreterInstance: Asynchronous[Queue.Module] = new Asynchronous[Queue.Module] {
     override def apply[A](input: Queue.Module[A]): Task[A] = input match {
-      case Queue.Put(_, value, f) ⇒
+      case Queue.Put(_, value) ⇒
         for {
           _ ← Task.delay(mem += value)
-        } yield f(())
+        } yield ()
 
-      case Queue.Get(_, f) ⇒
-        Task.delay(f(mem.dequeueFirst(_ ⇒ true)))
+      case Queue.Get(_) ⇒
+        Task.delay(mem.dequeueFirst(_ ⇒ true))
     }
 
     private val mem: mutable.Queue[String] = new mutable.Queue[String]()
@@ -24,12 +24,12 @@ trait QueueAsyncInterpreterInstance {
 trait QueueBlockingInterpreterInstance {
   implicit val queueBlockingInterpreterInstance: Blocking[Queue.Module] = new Blocking[Queue.Module] {
     override def apply[A](input: Queue.Module[A]): Id[A] = input match {
-      case Queue.Put(_, value, f) ⇒
+      case Queue.Put(_, value) ⇒
         mem += value
-        f(())
+        ()
 
-      case Queue.Get(_, f) ⇒
-        f(mem.dequeueFirst(_ ⇒ true))
+      case Queue.Get(_) ⇒
+        mem.dequeueFirst(_ ⇒ true)
     }
 
     private val mem: mutable.Queue[String] = new mutable.Queue[String]()

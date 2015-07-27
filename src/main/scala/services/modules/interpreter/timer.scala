@@ -7,8 +7,8 @@ import services.modules.Timer
 trait TimerAsyncInterpreterInstance {
   implicit val timerAsyncInterpreterIntance: Asynchronous[Timer.Module] = new Asynchronous[Timer.Module] {
     override def apply[A](input: Timer.Module[A]): Task[A] = input match {
-      case Timer.Get(f) ⇒
-        Task.delay(f(System.currentTimeMillis()))
+      case Timer.Get ⇒
+        Task.delay(System.currentTimeMillis())
     }
   }
 }
@@ -16,8 +16,8 @@ trait TimerAsyncInterpreterInstance {
 trait TimerBlockingInterpreterInstance {
   implicit val timerBlockingInterpreterIntance: Blocking[Timer.Module] = new Blocking[Timer.Module] {
     override def apply[A](input: Timer.Module[A]): Id[A] = input match {
-      case Timer.Get(f) ⇒
-        f(System.currentTimeMillis())
+      case Timer.Get ⇒
+        System.currentTimeMillis()
     }
   }
 }
