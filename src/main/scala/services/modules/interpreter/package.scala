@@ -1,4 +1,4 @@
-package services.modules
+/*package services.modules
 
 import cats.data.{ Coproduct, Xor }
 import cats.free.Free
@@ -31,3 +31,4 @@ package object interpreter {
       }
     }
 }
+*/ 

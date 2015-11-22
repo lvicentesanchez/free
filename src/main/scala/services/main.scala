@@ -1,4 +1,4 @@
-package services
+/*package services
 
 import cats.Id
 import cats.data.Coproduct
@@ -10,7 +10,7 @@ import services.modules.interpreter.blocking.all._
 object main extends App {
   type Fr2[A] = Users.Module[A]
   type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
-  type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
+  type Fr0[A] = Coproduct[queue.QueueOperations, Fr1, A]
   type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
   type Prg[A] = Free[Frg, A]
 
@@ -31,3 +31,4 @@ object main extends App {
 
   program.runI[Id]
 }
+*/ 

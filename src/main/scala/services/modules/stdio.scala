@@ -2,17 +2,21 @@ package services.modules
 
 import cats.free.{ Free, Inject }
 
-object StdIO {
-  sealed trait Module[A]
+trait StdIOModule {
 
-  final case class Get(prompt: String) extends Module[String]
-  final case class Put(output: String) extends Module[Unit]
-}
+  sealed trait StdIOOperations[A]
 
-trait StdIOFunctions {
-  def get[M[_]](prompt: String)(implicit I: Inject[StdIO.Module, M]): Free[M, String] =
-    Free.inject[StdIO.Module, M](StdIO.Get(prompt))
+  final case class Get(prompt: String) extends StdIOOperations[String]
+  final case class Put(output: String) extends StdIOOperations[Unit]
 
-  def put[M[_]](output: String)(implicit I: Inject[StdIO.Module, M]): Free[M, Unit] =
-    Free.inject[StdIO.Module, M](StdIO.Put(output))
+  trait StdIO[M[_]] {
+
+    implicit def I: Inject[StdIOOperations, M]
+
+    def get(prompt: String): Free[M, String] =
+      Free.inject[StdIOOperations, M](Get(prompt))
+
+    def put(output: String): Free[M, Unit] =
+      Free.inject[StdIOOperations, M](Put(output))
+  }
 }

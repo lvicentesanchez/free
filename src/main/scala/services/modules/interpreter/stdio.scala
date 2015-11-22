@@ -1,20 +1,23 @@
 package services.modules.interpreter
 
 import cats.Id
-import services.modules.StdIO
+import services.modules.stdio._
 
 import scala.io.StdIn
 
 trait StdIOBlockingInterpreterInstance {
-  implicit val stdioBlockingInterpreterIntance: Blocking[StdIO.Module] = new Blocking[StdIO.Module] {
-    override def apply[A](input: StdIO.Module[A]): Id[A] = input match {
-      case StdIO.Put(output) ⇒
-        println(output)
+  implicit val stdioBlockingInterpreterIntance: Blocking[StdIOOperations] = new StdIOBlockingInterpreter {}
+}
 
-      case StdIO.Get(prompt) ⇒
-        println(prompt)
-        StdIn.readLine()
-    }
+trait StdIOBlockingInterpreter extends Blocking[StdIOOperations] {
+  override def apply[A](input: StdIOOperations[A]): Id[A] = input match {
+    case Put(output) ⇒
+      println(output)
+
+    case Get(prompt) ⇒
+      println(prompt)
+      StdIn.readLine()
   }
 }
 
+object StdIOBlockingInterpreter extends StdIOBlockingInterpreter
