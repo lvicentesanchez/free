@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free ⇒ F, Inject, InjectFunctions }
+import scalaz.{ Free, Inject }
 
 object StdIO {
   sealed trait Module[A]
@@ -9,10 +9,10 @@ object StdIO {
   final case class Put(output: String) extends Module[Unit]
 }
 
-trait StdIOFunctions extends InjectFunctions {
-  def get[M[_]](prompt: String)(implicit I: Inject[StdIO.Module, M]): F.FreeC[M, String] =
-    F.liftFC(I.inj(StdIO.Get(prompt)))
+trait StdIOFunctions {
+  def get[M[_]](prompt: String)(implicit I: Inject[StdIO.Module, M]): Free[M, String] =
+    Free.liftF(I.inj(StdIO.Get(prompt)))
 
-  def put[M[_]](output: String)(implicit I: Inject[StdIO.Module, M]): F.FreeC[M, Unit] =
-    F.liftFC(I.inj(StdIO.Put(output)))
+  def put[M[_]](output: String)(implicit I: Inject[StdIO.Module, M]): Free[M, Unit] =
+    Free.liftF(I.inj(StdIO.Put(output)))
 }

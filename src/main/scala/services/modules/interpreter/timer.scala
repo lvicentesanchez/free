@@ -1,8 +1,9 @@
 package services.modules.interpreter
 
+import services.modules.Timer
+
 import scalaz.Id._
 import scalaz.concurrent.Task
-import services.modules.Timer
 
 trait TimerAsyncInterpreterInstance {
   implicit val timerAsyncInterpreterIntance: Asynchronous[Timer.Module] = new Asynchronous[Timer.Module] {

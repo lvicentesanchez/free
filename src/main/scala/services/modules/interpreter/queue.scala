@@ -1,9 +1,10 @@
 package services.modules.interpreter
 
+import services.modules.Queue
+
 import scala.collection.mutable
 import scalaz.Id._
 import scalaz.concurrent.Task
-import services.modules.Queue
 
 trait QueueAsyncInterpreterInstance {
   implicit val queueAsyncInterpreterInstance: Asynchronous[Queue.Module] = new Asynchronous[Queue.Module] {

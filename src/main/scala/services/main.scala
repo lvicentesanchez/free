@@ -1,20 +1,19 @@
 package services
 
-import scalaz.Id._
-import scalaz.{ Coproduct, Free ⇒ F }
-import scalaz.concurrent.Task
-import scalaz.std.option._
 import services.modules._
-import services.modules.all._
 import services.modules.interpreter._
-import services.modules.interpreter.async.all._
+import services.modules.interpreter.blocking.all._
+
+import scalaz.Id._
+import scalaz.std.option._
+import scalaz.{ Coproduct, Free }
 
 object main extends App {
   type Fr2[A] = Users.Module[A]
   type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
   type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
   type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
-  type Prg[A] = F.FreeC[Frg, A]
+  type Prg[A] = Free[Frg, A]
 
   val program: Prg[Unit] =
     for {
@@ -28,5 +27,5 @@ object main extends App {
       _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
-  program.runI[Task].run
+  program.runI[Id]
 }

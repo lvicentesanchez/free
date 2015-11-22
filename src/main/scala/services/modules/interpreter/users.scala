@@ -1,9 +1,10 @@
 package services.modules.interpreter
 
+import services.modules.{ User, Users }
+
 import scalaz.Id._
 import scalaz.concurrent.Task
 import scalaz.std.option._
-import services.modules.{ User, Users }
 
 trait UsersAsyncInterpreterInstance {
   implicit val usersAsyncInterpreterInstance: Asynchronous[Users.Module] = new Asynchronous[Users.Module] {

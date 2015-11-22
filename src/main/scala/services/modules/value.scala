@@ -1,10 +1,10 @@
 package services.modules
 
-import scalaz.{ Free ⇒ F }
+import scalaz.Free
 
 object Value
 
 trait ValueFunctions {
-  def pure[M[_], A](pure: A): F.FreeC[M, A] =
-    F.point[({ type L[x] = scalaz.Coyoneda[M, x] })#L, A](pure)
+  def pure[M[_], A](pure: A): Free[M, A] =
+    Free.pure[M, A](pure)
 }

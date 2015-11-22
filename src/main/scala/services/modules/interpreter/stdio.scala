@@ -1,9 +1,10 @@
 package services.modules.interpreter
 
+import services.modules.StdIO
+
 import scala.io.StdIn
 import scalaz.Id._
 import scalaz.concurrent.Task
-import services.modules.StdIO
 
 trait StdIOAsyncInterpreterInstance {
   implicit val stdioAsyncInterpreterIntance: Asynchronous[StdIO.Module] = new Asynchronous[StdIO.Module] {
@@ -32,4 +33,3 @@ trait StdIOBlockingInterpreterInstance {
     }
   }
 }
-

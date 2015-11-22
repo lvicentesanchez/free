@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ ~>, -\/, \/-, Coproduct, Free, Monad }
+import scalaz.{ -\/, Coproduct, Free, Monad, \/-, ~> }
 
 package object interpreter {
   object async {
@@ -29,9 +29,9 @@ package object interpreter {
       with UsersBlockingInterpreterInstance
   }
 
-  implicit class InterpreterExtensionMethods[F[_], A](val free: Free.FreeC[F, A]) {
+  implicit class InterpreterExtensionMethods[F[_], A](val free: Free[F, A]) {
     def runI[M[_]](implicit M: Monad[M], f: F ~> M): M[A] =
-      Free.runFC[F, M, A](free)(f)
+      free.foldMap(f)
   }
 
   implicit def PartialCoproductInterpreter[F[_]: ({ type L[M[_]] = M ~> N })#L, G[_]: ({ type L[M[_]] = M ~> N })#L, N[_]]: ({ type L[A] = Coproduct[F, G, A] })#L ~> N =
