@@ -21,4 +21,8 @@ object stdio {
   }
 
   final class StdIOModule[M[_]](override val I: Inject[StdIOOp, M]) extends StdIO[M]
+
+  object StdIOModule {
+    def apply[M[_]](I: Inject[StdIOOp, M]): StdIOModule[M] = new StdIOModule(I)
+  }
 }

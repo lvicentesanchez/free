@@ -16,4 +16,8 @@ object timer {
   }
 
   final class TimerModule[M[_]](override val I: Inject[TimerOp, M]) extends Timer[M]
+
+  object TimerModule {
+    def apply[M[_]](I: Inject[TimerOp, M]): TimerModule[M] = new TimerModule(I)
+  }
 }

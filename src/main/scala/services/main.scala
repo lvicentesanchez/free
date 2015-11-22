@@ -14,19 +14,19 @@ object main extends App {
   type Frg[A] = Coproduct[QueueOp, Fr0, A]
   type Prg[A] = Free[Frg, A]
 
-  val Q = new QueueModule[Frg](Inject[QueueOp, Frg])
-  val S = new StdIOModule[Frg](Inject[StdIOOp, Frg])
-  val T = new TimerModule[Frg](Inject[TimerOp, Frg])
+  val Queue = QueueModule(Inject[QueueOp, Frg])
+  val StdIO = StdIOModule(Inject[StdIOOp, Frg])
+  val Timer = TimerModule(Inject[TimerOp, Frg])
 
   val program: Prg[Unit] =
     for {
-      input ← S.get("What's your name?")
-      time0 ← T.get
-      _ ← Q.put(input)
-      valuu ← Q.pop
-      time1 ← T.get
-      _ ← S.put(Seq(valuu, valuu.map(_.reverse)).flatten.toString())
-      _ ← S.put(s"Secs : ${(time1 - time0) / 1000.0}")
+      input <- StdIO.get("What's your name?")
+      time0 <- Timer.get
+      _ <- Queue.put(input)
+      value <- Queue.pop
+      time1 <- Timer.get
+      _ <- StdIO.put(Seq(value, value.map(_.reverse)).flatten.toString())
+      _ <- StdIO.put(s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
   program.runI[Id]

@@ -21,4 +21,8 @@ object queue {
   }
 
   final class QueueModule[M[_]](override val I: Inject[QueueOp, M]) extends Queue[M]
+
+  object QueueModule {
+    def apply[M[_]](I: Inject[QueueOp, M]): QueueModule[M] = new QueueModule(I)
+  }
 }
