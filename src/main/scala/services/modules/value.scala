@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.Free
+import cats.free.Free
 
 object Value
 

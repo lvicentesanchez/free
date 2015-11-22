@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Inject }
+import cats.free.{ Free, Inject }
 
 object StdIO {
   sealed trait Module[A]
@@ -11,8 +11,8 @@ object StdIO {
 
 trait StdIOFunctions {
   def get[M[_]](prompt: String)(implicit I: Inject[StdIO.Module, M]): Free[M, String] =
-    Free.liftF(I.inj(StdIO.Get(prompt)))
+    Free.inject[StdIO.Module, M](StdIO.Get(prompt))
 
   def put[M[_]](output: String)(implicit I: Inject[StdIO.Module, M]): Free[M, Unit] =
-    Free.liftF(I.inj(StdIO.Put(output)))
+    Free.inject[StdIO.Module, M](StdIO.Put(output))
 }

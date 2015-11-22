@@ -1,12 +1,11 @@
 package services
 
+import cats.Id
+import cats.data.Coproduct
+import cats.free.Free
 import services.modules._
 import services.modules.interpreter._
 import services.modules.interpreter.blocking.all._
-
-import scalaz.Id._
-import scalaz.std.option._
-import scalaz.{ Coproduct, Free }
 
 object main extends App {
   type Fr2[A] = Users.Module[A]
@@ -21,7 +20,10 @@ object main extends App {
       time0 ← timer.get[Frg]()
       _ ← queue.put[Frg](QueueID("myqueue"), input)
       valuu ← queue.get[Frg](QueueID("myqueue"))
-      users ← valuu.fold(value.pure[Frg, Option[User]](none[User]))(v ⇒ users.findById[Frg](UserID(v)))
+      users ← valuu match {
+        case Some(v) ⇒ users.findById[Frg](UserID(v))
+        case None ⇒ value.pure[Frg, Option[User]](None)
+      }
       time1 ← timer.get[Frg]()
       _ ← stdio.put[Frg](Seq(valuu, users.map(_.name)).flatten.toString())
       _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")

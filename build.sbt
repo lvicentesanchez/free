@@ -10,15 +10,10 @@ resolvers ++= Seq(
 // Dependencies
 
 val testDependencies = Seq (
-  "com.typesafe.slick" %% "slick-testkit"     % "3.0.0" % "test"
 )
 
 val rootDependencies = Seq(
-  "com.chuusai"        %% "shapeless"         % "2.2.5",
-  "com.h2database"     %  "h2"                % "1.4.180",
-  "com.typesafe.slick" %% "slick"             % "3.0.0",
-  "org.scalaz"         %% "scalaz-concurrent" % "7.2.0-SNAPSHOT" changing(),
-  "org.scalaz"         %% "scalaz-core"       % "7.2.0-SNAPSHOT" changing()
+  "org.spire-math"     %% "cats"              % "0.4.0-SNAPSHOT" changing()
 )
 
 val dependencies =
