@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Inject }
+import cats.free.{ Free, Inject }
 
 case class UserID(repr: String)
 
@@ -14,5 +14,5 @@ object Users {
 
 trait UsersFunctions {
   def findById[M[_]](uid: UserID)(implicit I: Inject[Users.Module, M]): Free[M, Option[User]] =
-    Free.liftF(I.inj(Users.FindById(uid)))
+    Free.inject[Users.Module, M](Users.FindById(uid))
 }

@@ -1,6 +1,6 @@
 package services.modules
 
-import scalaz.{ Free, Inject }
+import cats.free.{ Free, Inject }
 
 case class QueueID(repr: String)
 
@@ -13,8 +13,8 @@ object Queue {
 
 trait QueueFunctions {
   def get[M[_]](queueID: QueueID)(implicit I: Inject[Queue.Module, M]): Free[M, Option[String]] =
-    Free.liftF(I.inj(Queue.Get(queueID)))
+    Free.inject[Queue.Module, M](Queue.Get(queueID))
 
   def put[M[_]](queueID: QueueID, value: String)(implicit I: Inject[Queue.Module, M]): Free[M, Unit] =
-    Free.liftF(I.inj(Queue.Put(queueID, value)))
+    Free.inject[Queue.Module, M](Queue.Put(queueID, value))
 }

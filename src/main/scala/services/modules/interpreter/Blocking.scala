@@ -1,6 +1,5 @@
 package services.modules.interpreter
 
-import scalaz.Id._
-import scalaz.~>
+import cats.{ Id, ~> }
 
 trait Blocking[F[_]] extends (F ~> Id)
