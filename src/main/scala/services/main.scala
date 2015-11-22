@@ -29,5 +29,5 @@ object main extends App {
       _ <- StdIO.put(s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
-  program.runI[Id]
+  program.interpret[Id]
 }

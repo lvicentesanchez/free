@@ -16,8 +16,8 @@ package object interpreter {
       with TimerBlockingInterpreterInstance
   }
 
-  implicit class InterpreterExtensionMethods[F[_], A](val free: Free[F, A]) {
-    def runI[M[_]](implicit M: Monad[M], f: F ~> M): M[A] =
+  implicit class InterpreterExtensionMethods[F[_], A](val free: Free[F, A]) extends AnyVal {
+    def interpret[M[_]](implicit M: Monad[M], f: F ~> M): M[A] =
       free.foldMap(f)
   }
 
