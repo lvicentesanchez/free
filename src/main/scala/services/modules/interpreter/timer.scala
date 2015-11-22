@@ -9,7 +9,7 @@ trait TimerBlockingInterpreterInstance {
 
 trait TimerBlockingInterpreter extends Blocking[TimerOp] {
   override def apply[A](input: TimerOp[A]): Id[A] = input match {
-    case Get ⇒ System.currentTimeMillis()
+    case Get => System.currentTimeMillis()
   }
 }
 

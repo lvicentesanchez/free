@@ -11,9 +11,9 @@ trait StdIOBlockingInterpreterInstance {
 
 trait StdIOBlockingInterpreter extends Blocking[StdIOOp] {
   override def apply[A](input: StdIOOp[A]): Id[A] = input match {
-    case Put(output) ⇒ println(output)
+    case Put(output) => println(output)
 
-    case Get(prompt) ⇒ println(prompt); StdIn.readLine()
+    case Get(prompt) => println(prompt); StdIn.readLine()
   }
 }
 

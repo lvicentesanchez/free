@@ -13,9 +13,9 @@ trait QueueBlockingInterpreter extends Blocking[QueueOp] {
   private val mem: mutable.Queue[String] = new mutable.Queue[String]()
 
   override def apply[A](input: QueueOp[A]): Id[A] = input match {
-    case Pop ⇒ mem.dequeueFirst(_ ⇒ true)
+    case Pop => mem.dequeueFirst(_ => true)
 
-    case Put(value) ⇒ mem += value; ()
+    case Put(value) => mem += value; ()
   }
 }
 

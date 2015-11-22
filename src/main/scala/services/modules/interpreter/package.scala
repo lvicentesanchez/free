@@ -25,8 +25,8 @@ package object interpreter {
     new ~>[Coproduct[F, G, ?], N] {
       def apply[A](input: Coproduct[F, G, A]) =
         input.run match {
-          case Xor.Left(fa) ⇒ FN.apply(fa)
-          case Xor.Right(ga) ⇒ GN.apply(ga)
+          case Xor.Left(fa) => FN.apply(fa)
+          case Xor.Right(ga) => GN.apply(ga)
         }
     }
 }
