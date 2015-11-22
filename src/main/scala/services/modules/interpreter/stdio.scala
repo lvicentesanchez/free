@@ -6,17 +6,14 @@ import services.modules.stdio._
 import scala.io.StdIn
 
 trait StdIOBlockingInterpreterInstance {
-  implicit val stdioBlockingInterpreterIntance: Blocking[StdIOOperations] = new StdIOBlockingInterpreter {}
+  implicit val stdioBlockingInterpreterIntance: Blocking[StdIOOp] = new StdIOBlockingInterpreter {}
 }
 
-trait StdIOBlockingInterpreter extends Blocking[StdIOOperations] {
-  override def apply[A](input: StdIOOperations[A]): Id[A] = input match {
-    case Put(output) ⇒
-      println(output)
+trait StdIOBlockingInterpreter extends Blocking[StdIOOp] {
+  override def apply[A](input: StdIOOp[A]): Id[A] = input match {
+    case Put(output) ⇒ println(output)
 
-    case Get(prompt) ⇒
-      println(prompt)
-      StdIn.readLine()
+    case Get(prompt) ⇒ println(prompt); StdIn.readLine()
   }
 }
 

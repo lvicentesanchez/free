@@ -6,19 +6,16 @@ import services.modules.queue._
 import scala.collection.mutable
 
 trait QueueBlockingInterpreterInstance {
-  implicit val queueBlockingInterpreterInstance: Blocking[QueueOperations] = new QueueBlockingInterpreter {}
+  implicit val queueBlockingInterpreterInstance: Blocking[QueueOp] = new QueueBlockingInterpreter {}
 }
 
-trait QueueBlockingInterpreter extends Blocking[QueueOperations] {
+trait QueueBlockingInterpreter extends Blocking[QueueOp] {
   private val mem: mutable.Queue[String] = new mutable.Queue[String]()
 
-  override def apply[A](input: QueueOperations[A]): Id[A] = input match {
-    case Put(_, value) ⇒
-      mem += value
-      ()
+  override def apply[A](input: QueueOp[A]): Id[A] = input match {
+    case Pop ⇒ mem.dequeueFirst(_ ⇒ true)
 
-    case Get(_) ⇒
-      mem.dequeueFirst(_ ⇒ true)
+    case Put(value) ⇒ mem += value; ()
   }
 }
 

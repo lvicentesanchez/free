@@ -13,7 +13,10 @@ val testDependencies = Seq (
 )
 
 val rootDependencies = Seq(
-  "org.spire-math"     %% "cats"              % "0.4.0-SNAPSHOT" changing()
+  "org.spire-math" %% "cats" % "0.4.0-SNAPSHOT" changing(),
+  // Plugins
+  //
+  compilerPlugin("org.spire-math" %% "kind-projector" % "0.7.1")
 )
 
 val dependencies =
@@ -74,7 +77,7 @@ val formatting =
     .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, false)
     .setPreference(PreserveSpaceBeforeArguments, false)
     .setPreference(PreserveDanglingCloseParenthesis, true)
-    .setPreference(RewriteArrowSymbols, true)
+    .setPreference(RewriteArrowSymbols, false)
     .setPreference(SpaceBeforeColon, false)
     .setPreference(SpaceInsideBrackets, false)
     .setPreference(SpaceInsideParentheses, false)
