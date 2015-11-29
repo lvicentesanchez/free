@@ -1,24 +1,26 @@
 package services
 
-import cats.Id
 import cats.data.Coproduct
-import cats.free.{ Free, Inject }
-import services.modules.interpreter._
-import services.modules.interpreter.blocking.all._
-import services.modules.queue._
-import services.modules.stdio._
-import services.modules.timer._
+import cats.free.Inject
+import cats.{ Id, ~> }
+import services.algebras.interpreter._
+import services.algebras.interpreter.blocking.all._
+import services.algebras.queue._
+import services.algebras.stdio._
+import services.algebras.timer._
 
-object main extends App {
+object HelloWorld extends Program[Id, Unit] {
+
   type Fr0[A] = Coproduct[StdIOOp, TimerOp, A]
   type Frg[A] = Coproduct[QueueOp, Fr0, A]
-  type Prg[A] = Free[Frg, A]
 
-  val Queue = QueueModule(Inject[QueueOp, Frg])
-  val StdIO = StdIOModule(Inject[StdIOOp, Frg])
-  val Timer = TimerModule(Inject[TimerOp, Frg])
+  val Queue = QueueAlgebra(Inject[QueueOp, Frg])
+  val StdIO = StdIOAlgebra(Inject[StdIOOp, Frg])
+  val Timer = TimerAlgebra(Inject[TimerOp, Frg])
 
-  val program: Prg[Unit] =
+  override val I: Frg ~> Id = implicitly[Frg ~> Id]
+
+  override val receipt: Prg =
     for {
       input <- StdIO.get("What's your name?")
       time0 <- Timer.get
@@ -28,6 +30,9 @@ object main extends App {
       _ <- StdIO.put(Seq(value, value.map(_.reverse)).flatten.toString())
       _ <- StdIO.put(s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
+}
 
-  program.interpret[Id]
+object main extends App {
+  
+  HelloWorld.program()
 }

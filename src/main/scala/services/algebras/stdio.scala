@@ -1,4 +1,4 @@
-package services.modules
+package services.algebras
 
 import cats.free.{ Free, Inject }
 
@@ -20,9 +20,9 @@ object stdio {
       Free.inject[StdIOOp, M](Put(output))
   }
 
-  final class StdIOModule[M[_]](override val I: Inject[StdIOOp, M]) extends StdIO[M]
+  final class StdIOAlgebra[M[_]](override val I: Inject[StdIOOp, M]) extends StdIO[M]
 
-  object StdIOModule {
-    def apply[M[_]](I: Inject[StdIOOp, M]): StdIOModule[M] = new StdIOModule(I)
+  object StdIOAlgebra {
+    def apply[M[_]](I: Inject[StdIOOp, M]): StdIOAlgebra[M] = new StdIOAlgebra(I)
   }
 }

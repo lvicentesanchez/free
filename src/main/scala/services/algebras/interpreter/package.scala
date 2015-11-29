@@ -1,6 +1,6 @@
-package services.modules
+package services.algebras
 
-import cats.data.{ Coproduct, Xor }
+import cats.data.Coproduct
 import cats.free.Free
 import cats.{ Monad, ~> }
 
@@ -24,9 +24,6 @@ package object interpreter {
   implicit def PartialCoproductInterpreter[F[_], G[_], N[_]](implicit FN: F ~> N, GN: G ~> N): Coproduct[F, G, ?] ~> N =
     new ~>[Coproduct[F, G, ?], N] {
       def apply[A](input: Coproduct[F, G, A]) =
-        input.run match {
-          case Xor.Left(fa) => FN.apply(fa)
-          case Xor.Right(ga) => GN.apply(ga)
-        }
+        input.run.fold(FN(_), GN(_))
     }
 }

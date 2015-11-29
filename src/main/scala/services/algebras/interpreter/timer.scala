@@ -1,7 +1,7 @@
-package services.modules.interpreter
+package services.algebras.interpreter
 
 import cats.Id
-import services.modules.timer._
+import services.algebras.timer._
 
 trait TimerBlockingInterpreterInstance {
   implicit val timerBlockingInterpreterIntance: Blocking[TimerOp] = new TimerBlockingInterpreter {}

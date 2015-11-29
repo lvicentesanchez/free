@@ -1,4 +1,4 @@
-package services.modules
+package services.algebras
 
 import cats.free.{ Free, Inject }
 
@@ -15,9 +15,9 @@ object timer {
       Free.inject[TimerOp, M](Get)
   }
 
-  final class TimerModule[M[_]](override val I: Inject[TimerOp, M]) extends Timer[M]
+  final class TimerAlgebra[M[_]](override val I: Inject[TimerOp, M]) extends Timer[M]
 
-  object TimerModule {
-    def apply[M[_]](I: Inject[TimerOp, M]): TimerModule[M] = new TimerModule(I)
+  object TimerAlgebra {
+    def apply[M[_]](I: Inject[TimerOp, M]): TimerAlgebra[M] = new TimerAlgebra(I)
   }
 }

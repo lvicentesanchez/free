@@ -1,4 +1,4 @@
-package services.modules.interpreter
+package services.algebras.interpreter
 
 import cats.{ Id, ~> }
 

@@ -1,7 +1,7 @@
-package services.modules.interpreter
+package services.algebras.interpreter
 
 import cats.Id
-import services.modules.queue._
+import services.algebras.queue._
 
 import scala.collection.mutable
 

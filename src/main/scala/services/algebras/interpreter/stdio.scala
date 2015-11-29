@@ -1,7 +1,7 @@
-package services.modules.interpreter
+package services.algebras.interpreter
 
 import cats.Id
-import services.modules.stdio._
+import services.algebras.stdio._
 
 import scala.io.StdIn
 
