@@ -33,6 +33,6 @@ object HelloWorld extends Program[Id, Unit] {
 }
 
 object main extends App {
-  
+
   HelloWorld.program()
 }
