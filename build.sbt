@@ -13,7 +13,7 @@ val testDependencies = Seq (
 )
 
 val rootDependencies = Seq(
-  "org.spire-math" %% "cats" % "0.4.0-SNAPSHOT" changing(),
+  "org.typelevel" %% "cats" % "0.4.1",
   // Plugins
   //
   compilerPlugin("org.spire-math" %% "kind-projector" % "0.7.1")
@@ -26,22 +26,27 @@ val dependencies =
 // Settings
 //
 val compileSettings = Seq(
-  "-deprecation",
-  "-encoding", "UTF-8",
   "-feature",
-  "-language:_",
-  //"-language:existentials",
-  //"-language:experimental.macros",
+  "-deprecation",
+  "-encoding", "utf8",
+  //"-language:postfixOps",
   //"-language:higherKinds",
   //"-language:implicitConversions",
+  "-language:_",
+  "-target:jvm-1.8",
+  "-Ybackend:GenBCode",
+  "-Ydelambdafy:method",
   "-unchecked",
-  //"-Xfatal-warnings",
+  "-Xcheckinit",
+  "-Xfuture",
   "-Xlint",
+  //"-Xfatal-warnings",
   "-Yno-adapted-args",
-  //"-Ywarn-all",
-  //"-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Ywarn-value-discard"
+  "-Ywarn-dead-code",
+  "-Ywarn-value-discard",
+  "-Xfuture"/*,
+  "-Yno-imports",
+  "-Yno-predef"*/
 )
 
 val forkedJvmOption = Seq(
