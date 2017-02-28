@@ -9,18 +9,4 @@ resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositori
       
 resolvers += "Softprops Maven" at "http://dl.bintray.com/content/softprops/maven"
 
-// Assembly
-//
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
-
-// Build Info
-//
-addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2")
-
-// Releases
-//
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.8.3")
-
-// Scalariform
-//
-addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.5.6")

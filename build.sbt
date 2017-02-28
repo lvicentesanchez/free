@@ -1,9 +1,5 @@
-// put this at the top of the file
-import scalariform.formatter.preferences._
-
 // Resolvers
 resolvers ++= Seq(
-  "scalaz bintray" at "https://dl.bintray.com/scalaz/releases",
   "sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 )
 
@@ -13,7 +9,7 @@ val testDependencies = Seq (
 )
 
 val rootDependencies = Seq(
-  "org.spire-math"     %% "cats"              % "0.4.0-SNAPSHOT" changing()
+  "org.typelevel" %% "cats" % "0.9.0"
 )
 
 val dependencies =
@@ -57,36 +53,12 @@ val forkedJvmOption = Seq(
   "-XX:+UseCompressedOops"
 )
 
-val formatting =
-  FormattingPreferences()
-    .setPreference(AlignParameters, true)
-    .setPreference(AlignSingleLineCaseStatements, false)
-    .setPreference(AlignSingleLineCaseStatements.MaxArrowIndent, 40)
-    .setPreference(CompactControlReadability, false)
-    .setPreference(CompactStringConcatenation, false)
-    .setPreference(DoubleIndentClassDeclaration, true)
-    .setPreference(FormatXml, true)
-    .setPreference(IndentLocalDefs, false)
-    .setPreference(IndentPackageBlocks, true)
-    .setPreference(IndentSpaces, 2)
-    .setPreference(IndentWithTabs, false)
-    .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
-    .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, false)
-    .setPreference(PreserveSpaceBeforeArguments, false)
-    .setPreference(PreserveDanglingCloseParenthesis, true)
-    .setPreference(RewriteArrowSymbols, true)
-    .setPreference(SpaceBeforeColon, false)
-    .setPreference(SpaceInsideBrackets, false)
-    .setPreference(SpaceInsideParentheses, false)
-    .setPreference(SpacesWithinPatternBinders, true)
-
-val pluginsSettings =
-  scalariformSettings
+val pluginsSettings = Seq()
 
 val settings = Seq(
-  name := "freez",
+  name := "free",
   version := "0.1-SNAPSHOT",
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.12.1",
   libraryDependencies ++= dependencies,
   fork in run := true,
   fork in Test := true,
@@ -94,10 +66,7 @@ val settings = Seq(
   connectInput in run := true,
   javaOptions in run ++= forkedJvmOption,
   javaOptions in Test ++= forkedJvmOption,
-  scalacOptions := compileSettings,
-  // formatting
-  //
-  ScalariformKeys.preferences := formatting
+  scalacOptions := compileSettings
 )
 
 lazy val main =
