@@ -16,17 +16,17 @@ object main extends App {
 
   val program: Prg[Unit] =
     for {
-      input ← stdio.get[Frg]("What's your name?")
-      time0 ← timer.get[Frg]()
-      _ ← queue.put[Frg](QueueID("myqueue"), input)
-      valuu ← queue.get[Frg](QueueID("myqueue"))
-      users ← valuu match {
-        case Some(v) ⇒ users.findById[Frg](UserID(v))
-        case None ⇒ value.pure[Frg, Option[User]](None)
+      input <- stdio.get[Frg]("What's your name?")
+      time0 <- timer.get[Frg]()
+      _ <- queue.put[Frg](QueueID("myqueue"), input)
+      valuu <- queue.get[Frg](QueueID("myqueue"))
+      users <- valuu match {
+        case Some(v) => users.findById[Frg](UserID(v))
+        case None => value.pure[Frg, Option[User]](None)
       }
-      time1 ← timer.get[Frg]()
-      _ ← stdio.put[Frg](Seq(valuu, users.map(_.name)).flatten.toString())
-      _ ← stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
+      time1 <- timer.get[Frg]()
+      _ <- stdio.put[Frg](Seq(valuu, users.map(_.name)).flatten.toString())
+      _ <- stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
     } yield ()
 
   program.runI[Id]

@@ -10,9 +10,11 @@ object StdIO {
 }
 
 trait StdIOFunctions {
-  def get[M[_]](prompt: String)(implicit I: Inject[StdIO.Module, M]): Free[M, String] =
+  def get[M[_]](prompt: String)(
+      implicit I: Inject[StdIO.Module, M]): Free[M, String] =
     Free.inject[StdIO.Module, M](StdIO.Get(prompt))
 
-  def put[M[_]](output: String)(implicit I: Inject[StdIO.Module, M]): Free[M, Unit] =
+  def put[M[_]](output: String)(
+      implicit I: Inject[StdIO.Module, M]): Free[M, Unit] =
     Free.inject[StdIO.Module, M](StdIO.Put(output))
 }

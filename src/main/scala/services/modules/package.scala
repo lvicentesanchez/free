@@ -8,9 +8,9 @@ package object modules {
   object value extends ValueFunctions
 
   object all
-    extends QueueFunctions
-    with StdIOFunctions
-    with TimerFunctions
-    with UsersFunctions
-    with ValueFunctions
+      extends QueueFunctions
+      with StdIOFunctions
+      with TimerFunctions
+      with UsersFunctions
+      with ValueFunctions
 }

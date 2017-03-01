@@ -13,6 +13,7 @@ object Users {
 }
 
 trait UsersFunctions {
-  def findById[M[_]](uid: UserID)(implicit I: Inject[Users.Module, M]): Free[M, Option[User]] =
+  def findById[M[_]](uid: UserID)(
+      implicit I: Inject[Users.Module, M]): Free[M, Option[User]] =
     Free.inject[Users.Module, M](Users.FindById(uid))
 }

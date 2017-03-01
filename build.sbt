@@ -5,8 +5,7 @@ resolvers ++= Seq(
 
 // Dependencies
 
-val testDependencies = Seq (
-)
+val testDependencies = Seq()
 
 val rootDependencies = Seq(
   "org.typelevel" %% "cats" % "0.9.0"
@@ -14,13 +13,14 @@ val rootDependencies = Seq(
 
 val dependencies =
   rootDependencies ++
-  testDependencies
+    testDependencies
 
 // Settings
 //
 val compileSettings = Seq(
   "-deprecation",
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-feature",
   "-language:_",
   //"-language:existentials",
@@ -73,5 +73,5 @@ lazy val main =
   project
     .in(file("."))
     .settings(
-      pluginsSettings ++ settings:_*
+      pluginsSettings ++ settings: _*
     )
