@@ -1,27 +1,52 @@
-import cats._, syntax.flatMap._, syntax.functor._
+import cats._, instances.option._, syntax.flatMap._, syntax.functor._
 
 import scala.io.StdIn
 
-trait Console[M[_]] {
+abstract class ConsoleRead[M[_]](implicit val M: Monad[M]) {
+
   def read(): M[String]
+}
+
+abstract class ConsoleWrite[M[_]](implicit val M: Monad[M]) {
+
   def write(string: String): M[Unit]
 }
 
-object Console {
+object ConsoleRead {
 
-  def Impl[M[_]](implicit M: Monad[M]): Console[M] = new Console[M] {
-    def read(): M[String] = M.pure(StdIn.readLine("Your name: "))
-    def write(string: String): M[Unit] = M.pure(println(string))
+  final class Impl[M[_] : Monad]() extends ConsoleRead[M] {
+
+    override def read(): M[String] = M.pure(StdIn.readLine("Your name: "))
+  }
+
+  object Impl {
+
+    def apply[M[_] : Monad](): ConsoleRead[M] = new Impl[M]()
+  }
+}
+
+object ConsoleWrite {
+
+  final class Impl[M[_] : Monad]() extends ConsoleWrite[M] {
+
+    override def write(string: String): M[Unit] = M.pure(println(s"Hello $string!"))
+  }
+
+  object Impl {
+
+    def apply[M[_] : Monad](): ConsoleWrite[M] = new Impl[M]()
   }
 }
 
 object main extends App {
 
-  def program[M[_]](implicit M: Monad[M], C: Console[M]): M[Unit] =
+  def program[M[_]](cr: ConsoleRead[M], cw: ConsoleWrite[M]): M[Unit] = {
+    import cr.M
     for {
-      s <- C.read()
-      _ <- C.write(s)
+      s <- cr.read()
+      _ <- cw.write(s)
     } yield ()
+  }
 
-  program[Id](Monad[Id], Console.Impl[Id])
+  println(program[Option](ConsoleRead.Impl(), ConsoleWrite.Impl()))
 }
