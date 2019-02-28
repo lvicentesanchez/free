@@ -1,6 +1,7 @@
 package services.modules
 
-import cats.free.{ Free, Inject }
+import cats.InjectK
+import cats.free.Free
 
 object Timer {
   sealed trait Module[A]
@@ -9,6 +10,6 @@ object Timer {
 }
 
 trait TimerFunctions {
-  def get[M[_]]()(implicit I: Inject[Timer.Module, M]): Free[M, Long] =
+  def get[M[_]]()(implicit I: InjectK[Timer.Module, M]): Free[M, Long] =
     Free.inject[Timer.Module, M](Timer.Get)
 }

@@ -9,4 +9,4 @@ resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositori
 
 resolvers += "Softprops Maven" at "http://dl.bintray.com/content/softprops/maven"
 
-addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.5.6")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.5.1")

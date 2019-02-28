@@ -1,6 +1,7 @@
 package services.modules
 
-import cats.free.{ Free, Inject }
+import cats.InjectK
+import cats.free.Free
 
 case class QueueID(repr: String)
 
@@ -13,10 +14,10 @@ object Queue {
 
 trait QueueFunctions {
   def get[M[_]](queueID: QueueID)(
-      implicit I: Inject[Queue.Module, M]): Free[M, Option[String]] =
+      implicit I: InjectK[Queue.Module, M]): Free[M, Option[String]] =
     Free.inject[Queue.Module, M](Queue.Get(queueID))
 
   def put[M[_]](queueID: QueueID, value: String)(
-      implicit I: Inject[Queue.Module, M]): Free[M, Unit] =
+      implicit I: InjectK[Queue.Module, M]): Free[M, Unit] =
     Free.inject[Queue.Module, M](Queue.Put(queueID, value))
 }

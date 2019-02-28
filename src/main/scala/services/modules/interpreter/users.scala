@@ -1,7 +1,7 @@
 package services.modules.interpreter
 
 import cats.Id
-import services.modules.{ User, Users }
+import services.modules.{User, Users}
 
 trait UsersBlockingInterpreterInstance {
   implicit val usersBlockingInterpreterInstance: Blocking[Users.Module] =

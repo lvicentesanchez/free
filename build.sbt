@@ -8,7 +8,8 @@ resolvers ++= Seq(
 val testDependencies = Seq()
 
 val rootDependencies = Seq(
-  "org.typelevel" %% "cats" % "0.9.0"
+  "org.typelevel" %% "cats-core" % "1.6.0",
+  "org.typelevel" %% "cats-free" % "1.6.0"
 )
 
 val dependencies =
@@ -58,7 +59,7 @@ val pluginsSettings = Seq()
 val settings = Seq(
   name := "free",
   version := "0.1-SNAPSHOT",
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.12.8",
   libraryDependencies ++= dependencies,
   fork in run := true,
   fork in Test := true,

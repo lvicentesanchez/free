@@ -1,7 +1,7 @@
 package services
 
 import cats.Id
-import cats.data.Coproduct
+import cats.data.EitherK
 import cats.free.Free
 import services.modules._
 import services.modules.interpreter._
@@ -9,9 +9,9 @@ import services.modules.interpreter.blocking.all._
 
 object main extends App {
   type Fr2[A] = Users.Module[A]
-  type Fr1[A] = Coproduct[Timer.Module, Fr2, A]
-  type Fr0[A] = Coproduct[Queue.Module, Fr1, A]
-  type Frg[A] = Coproduct[StdIO.Module, Fr0, A]
+  type Fr1[A] = EitherK[Timer.Module, Fr2, A]
+  type Fr0[A] = EitherK[Queue.Module, Fr1, A]
+  type Frg[A] = EitherK[StdIO.Module, Fr0, A]
   type Prg[A] = Free[Frg, A]
 
   val program: Prg[Unit] =

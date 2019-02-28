@@ -1,6 +1,7 @@
 package services.modules
 
-import cats.free.{ Free, Inject }
+import cats.InjectK
+import cats.free.Free
 
 case class UserID(repr: String)
 
@@ -14,6 +15,6 @@ object Users {
 
 trait UsersFunctions {
   def findById[M[_]](uid: UserID)(
-      implicit I: Inject[Users.Module, M]): Free[M, Option[User]] =
+      implicit I: InjectK[Users.Module, M]): Free[M, Option[User]] =
     Free.inject[Users.Module, M](Users.FindById(uid))
 }
