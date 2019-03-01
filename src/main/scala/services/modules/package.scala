@@ -1,16 +1,16 @@
 package services
 
-package object modules {
-  object queue extends QueueFunctions
-  object stdio extends StdIOFunctions
-  object timer extends TimerFunctions
-  object users extends UsersFunctions
-  object value extends ValueFunctions
+import java.io.IOException
 
-  object all
-      extends QueueFunctions
-      with StdIOFunctions
-      with TimerFunctions
-      with UsersFunctions
-      with ValueFunctions
+import scalaz.zio.ZIO
+
+package object modules {
+
+  object users {
+
+    def findById(uid: UserID): ZIO[Users, IOException, Option[User]] =
+      ZIO.accessM(_.users.findById(uid))
+
+  }
+
 }

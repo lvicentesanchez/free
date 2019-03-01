@@ -1,33 +1,35 @@
 package services
 
-import cats.Id
-import cats.data.EitherK
-import cats.free.Free
+import java.util.concurrent.TimeUnit
+
+import scalaz.zio._
+import scalaz.zio.clock.Clock
+import scalaz.zio.console._
+import scalaz.zio.internal.PlatformLive
 import services.modules._
-import services.modules.interpreter._
-import services.modules.interpreter.blocking.all._
 
-object main extends App {
-  type Fr2[A] = Users.Module[A]
-  type Fr1[A] = EitherK[Timer.Module, Fr2, A]
-  type Fr0[A] = EitherK[Queue.Module, Fr1, A]
-  type Frg[A] = EitherK[StdIO.Module, Fr0, A]
-  type Prg[A] = Free[Frg, A]
+object Env
+  extends Clock.Live
+  with Console.Live
+  with Users.Live
 
-  val program: Prg[Unit] =
-    for {
-      input <- stdio.get[Frg]("What's your name?")
-      time0 <- timer.get[Frg]()
-      _ <- queue.put[Frg](QueueID("myqueue"), input)
-      valuu <- queue.get[Frg](QueueID("myqueue"))
-      users <- valuu match {
-        case Some(v) => users.findById[Frg](UserID(v))
-        case None => value.pure[Frg, Option[User]](None)
-      }
-      time1 <- timer.get[Frg]()
-      _ <- stdio.put[Frg](Seq(valuu, users.map(_.name)).flatten.toString())
-      _ <- stdio.put[Frg](s"Secs : ${(time1 - time0) / 1000.0}")
-    } yield ()
+object main {
 
-  program.runI[Id]
+  def main(args: Array[String]): Unit = {
+
+    val runtime = Runtime(Env, PlatformLive.Default)
+
+    val program =
+      for {
+        _ <- console.putStrLn("What's your name? ")
+        input <- console.getStrLn
+        time0 <- clock.currentTime(TimeUnit.MILLISECONDS)
+        users <- users.findById(UserID(input))
+        time1 <- clock.currentTime(TimeUnit.MILLISECONDS)
+        _ <- console.putStrLn(Seq(input, users).mkString(" -> "))
+        _ <- console.putStrLn(s"Secs : ${(time1 - time0) / 1000.0}")
+      } yield ()
+
+    runtime.unsafeRun(program)
+  }
 }

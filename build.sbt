@@ -8,8 +8,10 @@ resolvers ++= Seq(
 val testDependencies = Seq()
 
 val rootDependencies = Seq(
-  "org.typelevel" %% "cats-core" % "1.6.0",
-  "org.typelevel" %% "cats-free" % "1.6.0"
+  "org.scalaz"    %% "scalaz-zio"              % "1.0-RC1+1-fc2b066d-SNAPSHOT",
+  "org.scalaz"    %% "scalaz-zio-interop-cats" % "1.0-RC1+1-fc2b066d-SNAPSHOT",
+  "org.typelevel" %% "cats-core"               % "1.6.0",
+  "org.typelevel" %% "cats-free"               % "1.6.0"
 )
 
 val dependencies =
@@ -61,10 +63,10 @@ val settings = Seq(
   version := "0.1-SNAPSHOT",
   scalaVersion := "2.12.8",
   libraryDependencies ++= dependencies,
-  fork in run := true,
+  //fork in run := true,
   fork in Test := true,
   fork in testOnly := true,
-  connectInput in run := true,
+  //connectInput in run := true,
   javaOptions in run ++= forkedJvmOption,
   javaOptions in Test ++= forkedJvmOption,
   scalacOptions := compileSettings

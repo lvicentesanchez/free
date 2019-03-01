@@ -1,20 +1,41 @@
 package services.modules
 
-import cats.InjectK
-import cats.free.Free
+import java.io.IOException
+
+import scalaz.zio.ZIO
 
 case class UserID(repr: String)
 
 case class User(uid: UserID, name: String, age: Int)
 
-object Users {
-  sealed trait Module[A]
+trait Users {
 
-  final case class FindById[A](userID: UserID) extends Module[Option[User]]
+  val users: Users.Service[Any]
+
 }
 
-trait UsersFunctions {
-  def findById[M[_]](uid: UserID)(
-      implicit I: InjectK[Users.Module, M]): Free[M, Option[User]] =
-    Free.inject[Users.Module, M](Users.FindById(uid))
+object Users {
+
+  trait Service[A] {
+
+    def findById(uid: UserID): ZIO[Any, IOException, Option[User]]
+
+  }
+
+
+  trait Live extends Users {
+
+    override val users: Service[Any] = new Service[Any] {
+
+      override def findById(uid: UserID): ZIO[Any, IOException, Option[User]] =
+        ZIO.effect(Option(User(uid, uid.repr.reverse, 23))).refineOrDie {
+          case e:IOException => e
+        }
+
+    }
+
+  }
+
+  object Live extends Live
+
 }
