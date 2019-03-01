@@ -2,11 +2,11 @@ package services
 
 import java.util.concurrent.TimeUnit
 
-import scalaz.zio._
 import scalaz.zio.clock.Clock
-import scalaz.zio.console._
+import scalaz.zio.console.Console
 import scalaz.zio.internal.PlatformLive
-import services.modules._
+import scalaz.zio.{Runtime, clock, console}
+import services.modules.{UserID, Users, users}
 
 object Env
   extends Clock.Live
