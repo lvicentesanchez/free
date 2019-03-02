@@ -22,14 +22,13 @@ object Users {
 
   }
 
-
   trait Live extends Users {
 
     override val users: Service[Any] = new Service[Any] {
 
       override def findById(uid: UserID): ZIO[Any, IOException, Option[User]] =
         ZIO.effect(Option(User(uid, uid.repr.reverse, 23))).refineOrDie {
-          case e:IOException => e
+          case e: IOException => e
         }
 
     }

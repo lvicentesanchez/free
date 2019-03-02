@@ -5,13 +5,10 @@ import java.util.concurrent.TimeUnit
 import scalaz.zio.clock.Clock
 import scalaz.zio.console.Console
 import scalaz.zio.internal.PlatformLive
-import scalaz.zio.{Runtime, clock, console}
-import services.modules.{UserID, Users, users}
+import scalaz.zio.{ Runtime, clock, console }
+import services.modules.{ UserID, Users, users }
 
-object Env
-  extends Clock.Live
-  with Console.Live
-  with Users.Live
+object Env extends Clock.Live with Console.Live with Users.Live
 
 object main {
 
