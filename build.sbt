@@ -8,8 +8,8 @@ resolvers ++= Seq(
 val testDependencies = Seq()
 
 val rootDependencies = Seq(
-  "org.scalaz"    %% "scalaz-zio"              % "1.0-RC1+1-fc2b066d-SNAPSHOT",
-  "org.scalaz"    %% "scalaz-zio-interop-cats" % "1.0-RC1+1-fc2b066d-SNAPSHOT",
+  "org.scalaz"    %% "scalaz-zio"              % "1.0-RC1",
+  "org.scalaz"    %% "scalaz-zio-interop-cats" % "1.0-RC1",
   "org.typelevel" %% "cats-core"               % "1.6.0",
   "org.typelevel" %% "cats-free"               % "1.6.0"
 )

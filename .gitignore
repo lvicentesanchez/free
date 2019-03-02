@@ -84,3 +84,10 @@ Thumbs.db
 # Play Framework #
 ##################
 RUNNING_PID
+
+# Scala Metals #
+################
+.metals/
+.bloop/
+project/.bloop/
+
